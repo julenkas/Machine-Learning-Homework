@@ -1,0 +1,40 @@
+0. List of files
+
+all .c files: c source code files
+all .h files: c header files
+Makefile: file used to compile the code
+quick_start.txt: quick instructions from TAs
+noisy10_train.ssv: training set
+noisy10_valid.ssv: validation set (i.e., pruning set)
+noisy10_test.ssv: testing set
+read.dt: more detailed usage of this codebase from the original author (only if you are interested)
+
+
+1. The format of data files (e.g., noisy10_train.ssv)
+
+First three lines are data statistics (#variables plus label, variable names, properties of each variable).
+From the 4th line is the data: each line is an example, each column is either the label (the first column) or a variable.
+
+
+2. To compile the code (in the command line)
+
+make clean
+make
+
+
+3. To run the code (in the command line)
+
+./dt -tpt noisy10_train.ssv noisy10_valid.ssv noisy10_test.ssv
+
+
+4. Most relevant files to this homework (where you need to make changes)
+
+entropy.c (to write the entropy to compute information gain and pick spliting variable)
+prune-dt.c (to write post-pruning strategies)
+auxi.h (to change the EPSILON in the pruning rule)
+
+
+5. More detailed usage of this codebase from the original author (only if you are interested)
+
+see "readme.dt"
+

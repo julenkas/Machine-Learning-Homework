@@ -1,0 +1,150 @@
+
+***************************************************************************
+* Readme file for the decision tree learning algorithm
+*
+* (C) 1999 Dan Foygel (dfoygel@cs.cmu.edu)
+* Carnegie Mellon University
+* 
+* Based heavily on code written by Dimitris Margaritis (dmarg@cs.cmu.edu)
+***************************************************************************
+
+***********************
+* PROGRAM DESCRIPTION *
+***********************
+
+In this directory you will find the code for a decision tree learning
+program.  The executable is called "dt".  You will have to compile it
+for the computer architecture you'll be using. There are two 
+techniques for using this program.
+
+USAGE #1:The "dt" program takes either 4 or 6 arguments:
+
+  -  (Optional) The random number generator seed can be specified by
+     typing "-s <seed>" _right after_ "dt" (it will not work if you put
+     it anywhere else on the command line).  If no seed is specified,
+     the seed will be chosen (semi-)randomly from the microseconds of
+     the computer clock.
+
+  -  (Optional) dt can run in batch mode if you type "-b <number>" 
+     _right after_ "dt".  When doing this, the program will run the
+     algorithm <number> times and only report the summary statistics.
+     See "Batch" section in this README for detailed information.
+
+     (NOTE: The -s and -b flags cannot both be used.)
+
+  -  The fraction of the examples that are to be used for growing the
+     decision tree.
+
+  -  The fraction of the examples to be used for post-pruning
+     (reduced-error pruning) of the decision tree.
+
+  -  The fraction of the examples to be used for testing the accuracy of
+     the grown decision tree, after training and (possibly)
+     post-pruning.
+
+  -  The name of the file containing the examples.  Its format is
+     "SSV".  The format is explained below.
+
+The three sets of examples as specified by the three fractions are
+mutually exclusive.  The must add up to at most 1.0 (less than 1 is ok).
+
+USAGE #2: dt -tpt <trainfile> <prunefile> <testfile>
+          dt -tp <trainfile> <prunefile>
+          dt -tt <trainfile> <testfile>
+
+This form allows you to specifically specify which examples are for training and which are for training, which is useful for understanding how pruning works.
+
+          
+
+*************
+* EXAMPLES: *
+*************
+
+  dt 1 0 0 tennis.ssv
+
+This will cause dt to use 100% of the available examples in tennis.ssv
+to train the decision tree.  No pruning or testing will be done.
+
+  dt .4 0 .3 tennis.ssv
+
+This will cause dt to use 40% of the available examples in tennis.ssv
+to train the decision tree and 30% of these examples as a test set to
+evaluate the final learned tree.  No pruning will be done.
+
+  dt .4 .3 .3 tennis.ssv
+
+This will cause dt to use 40% of the available examples in tennis.ssv
+to train the decision tree, 30% of these examples for post-pruning, and 
+30% of these examples as a test set to evaluate the final learned tree.
+
+  dt -s 123456 .4 .3 .3 tennis.ssv
+
+This will do exactly the same thing as before, except the seed 123456
+will be used to ensure repeatable random number generation.  Use this
+argument when you want to make sure that the data is split into the
+training, pruning, and test sets the same way every time.
+
+NOTE: Running the program with the wrong number of examples, or
+fractions not in the range [0.0, 1.0], or fractions summing up to more
+than 1.0 will cause the program to abort with a message displaying its
+usage.
+
+**************
+* BATCH MODE *
+**************
+
+Example:
+
+  dt -b 100 .4 .3 .3 tennis.ssv
+
+This will run the decision tree learner 100 times (using 40% of the
+data for training, 30% for pruning, and 30% for test) using a
+different random split of the data each time.  Instead of reporting
+individual trees and statistics, only aggregate numbers will be
+displayed - the mean and standard deviation for the number of nodes in
+the tree, the training accuracy, and the test accuracy.
+
+Use this mode when you want to compare particular parameter settings -
+a batch size of at least 100 will ensure a reasonable level of
+reliability.
+
+*******************
+* SSV FILE FORMAT *
+*******************
+
+All data files use the SSV file format.  It is a simple text format,
+consisting of lines of either administrative information (the
+"header", first 3 lines), or data lines (the rest).  Each line
+consists of a number of words.  There is an arbitrary number of spaces
+or tabs allowed between words.  However, reasonably, a line cannot
+contain newlines.
+
+Header (first 3 lines):
+
+  The first line contains two numbers, the number of fields
+  (attributes, target attribute included) and the number of 0
+  (included for reasons of backwards compatability - please do not
+  modify or remove).  The second line contains as many words as are
+  fields.  Each word represents the name of the attribute.  The third
+  line contains as many characters as attributes.  Each character is
+  either 'c' (continuous attribute), 'b' (binary, 0/1 attribute) or
+  'd' (discrete attribute, more than two alternatives).
+
+Data (rest):
+
+  The rest of the file contains the data, with one example per line.
+  Note that binary attributes can only be represented with the two
+  numbers 0 and 1.  Discrete attributes can contain an arbitrary
+  number of values, each corresponding to a different string.  The
+  "dt" program automatically deduces the cardinality of each discrete
+  attribute.
+
+  NOTE: the target attribute is ALWAYS the first column and can only
+        be binary.
+
+Note that this is a rigid format, and you should make sure to follow
+it if you decide to add additional data.
+
+***********
+* THE END *
+***********
