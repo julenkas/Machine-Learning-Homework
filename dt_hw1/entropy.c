@@ -73,11 +73,14 @@ double LogBase2(double x){
    ---------------------------------------------------------------------- */
 
 double Entropy(int num_pos, int num_neg) {
-  
-  double entropy=0.0;
+  // In this example, variable space is positive and negative
+  // so we calculate entropy by summing P(x)log(x) for the 
+  // positive and negative examples
+  double total_examples = num_pos + num_neg;
+  double p_pos = num_pos / total_examples;
+  double p_neg = num_neg / total_examples;
 
-
-  return entropy;
+  return -(p_pos * LogBase2(p_pos) + p_neg * LogBase2(p_neg));
 }
 
 /* ----------------------------------------------------------------------

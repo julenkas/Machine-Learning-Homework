@@ -16,7 +16,8 @@
 #include "prune-dt.h"
 #include "bitarray.h"
 #include "ssv.h"
-
+#define CHILDREN_BEFORE 0
+#define CHILDREN_AFTER 1
 /* ----------------------------------------------------------------------
 
    Recursively check the correctness of an example as classified by the
@@ -218,10 +219,12 @@ void PruneDecisionTree(DTNODE *root, DTNODE *node,
   /*******************************************************************
      You could insert the recursive call BEFORE you check the node 
   *******************************************************************/
-
-
-  
-
+ 
+#if CHILDREN_BEFORE
+  for(i = 0; i < node->num_children; i++){
+    PruneDecisionTree(root, node->children[i], data, num_data, pruning_set, num_prune, ssvinfo);
+  }
+#endif
 
   /* First, we check the accuracy of the tree assuming we keep the current node */
   acc_before = DecisionTreeAccuracy(root, data, num_data, pruning_set, num_prune, ssvinfo);
@@ -261,6 +264,12 @@ void PruneDecisionTree(DTNODE *root, DTNODE *node,
        Or you could do the recursive call AFTER you check the node
        (given that you decided to keep it)
     *******************************************************************/
+
+#if CHILDREN_AFTER
+    for(i = 0; i < node->num_children; i++){
+      PruneDecisionTree(root, node->children[i], data, num_data, pruning_set, num_prune, ssvinfo);
+    }
+#endif
   
   
   
